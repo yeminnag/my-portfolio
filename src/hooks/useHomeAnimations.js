@@ -14,27 +14,35 @@ export function useHomeAnimations() {
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
 
-    gsap.set(wrapper, { zIndex: 1 });
+    const mm = gsap.matchMedia();
 
-    const tween = gsap.to(wrapper, {
-      x: () => -((wrapper.scrollWidth - window.innerWidth) * 1.3),
-      ease: 'none',
-      scrollTrigger: {
-        trigger: wrapper,
-        start: 'top top',
-        end: () => `+=${wrapper.scrollWidth}`,
-        scrub: true,
-        pin: true,
-        pinReparent: false,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-      },
+    mm.add('(min-width: 901px)', () => {
+      gsap.set(wrapper, { zIndex: 1 });
+
+      const tween = gsap.to(wrapper, {
+        x: () => -((wrapper.scrollWidth - window.innerWidth) * 1.3),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: wrapper,
+          start: 'top top',
+          end: () => `+=${wrapper.scrollWidth}`,
+          scrub: true,
+          pin: true,
+          pinReparent: false,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      return () => {
+        tween.scrollTrigger?.kill(true);
+        tween.kill();
+        gsap.set(wrapper, { clearProps: 'transform,position,top,left,width,height,zIndex' });
+      };
     });
 
     return () => {
-      tween.scrollTrigger?.kill(true);
-      tween.kill();
-      gsap.set(wrapper, { clearProps: 'transform,position,top,left,width,height,zIndex' });
+      mm.revert();
       killAllScrollTriggers();
       ScrollTrigger.refresh();
     };
