@@ -1,5 +1,7 @@
 # my-portfolio
 
+url - https://my-portfolio-nine-cyan-23.vercel.app/
+
 Personal portfolio site for Ye Min Aung — built with React, Vite, React Router, and GSAP.
 
 ## Features
